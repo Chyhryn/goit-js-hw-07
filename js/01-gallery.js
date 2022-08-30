@@ -24,27 +24,30 @@ gallery.addEventListener("click", modal);
 
 function modal(event) {
   event.preventDefault();
-  const largeImg = event.target.dataset.source;
 
-  const instance = basicLightbox.create(
-    `
+  const isIncludeClass = event.target.classList.contains("gallery__image");
+
+  if (isIncludeClass) {
+    const largeImg = event.target.dataset.source;
+
+    const instance = basicLightbox.create(
+      `
       <img src="${largeImg}" width="800" height="600">
   `,
-    {
-      onShow: (instance) => {
-        instance.element().querySelector("img").onclick = instance.close;
-
-        window.addEventListener("keydown", onPressEsc);
-      },
+      {
+        onShow: (instance) => {
+          window.addEventListener("keydown", onPressEsc);
+          instance.element().querySelector("img").onclick = instance.close;
+        },
+      }
+    );
+    function onPressEsc(event) {
+      if (event.code === "Escape") {
+        window.removeEventListener("keydown", onPressEsc);
+        instance.close();
+      }
     }
-  );
 
-  instance.show();
-
-  function onPressEsc(event) {
-    if (event.code === "Escape") {
-      instance.close();
-      window.removeEventListener("keydown", onPressEsc);
-    }
+    instance.show();
   }
 }
